@@ -159,6 +159,13 @@ $trigger =  New-ScheduledTaskTrigger -Once -At 10pm
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "Reboot" -Description "Reboot scheduled task" -User $username -Password $password
 Disable-ScheduledTask -TaskName "Reboot"
 
+#Create Scheduled Task to turn on the firewall daily
+"Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True" > C:\Scripts\firewall.ps1
+
+$action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument 'C:\Scripts\Firewall_On.ps1'
+$trigger =  New-ScheduledTaskTrigger -Daily -At 10pm
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "FirewallOnTest" -Description "Turn On Firewall" -User $username -Password $password
+
 #Disable Server Manager on login
 Disable-ScheduledTask -TaskPath ‘\Microsoft\Windows\Server Manager\’ -TaskName ‘ServerManager’
 
