@@ -134,18 +134,22 @@ if ($decision -eq 0) {
 
 } 
 
-#EXPERIMENTAL -- Set Duplicati scheduled task
-$TheString = '"C:\Program Files\Duplicati\duplicati.commandline" backup --full-if-more-than-n-incrementals=14 --auto-cleanup --no-encryption "D:\Web" "ftp://flintuser:WDkkiEEIXYVdDp0ukyrT@FS-DR-1.flintstudios.net/' + $NewName + '" > C:\Scripts\log.txt && "C:\Program Files\Duplicati\duplicati.commandline"  delete-older-than 14D --force --no-encryption "ftp://flintuser:WDkkiEEIXYVdDp0ukyrT@fs-dr-1.flintstudios.net/' + $NewName + '"'
-New-Item C:\Scripts\DuplicatiCmd.bat -ItemType file -Value $TheString
-$action = New-ScheduledTaskAction -Execute 'C:\Scripts\DuplicatiCmd.bat' 
-$trigger =  New-ScheduledTaskTrigger -Daily -At 11pm
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "Nightly Backups" -Description "Automated Duplicati Backups" -User $username -Password $password
 
 #Create and disable a Reboot Scheduled Task
 $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\shutdown.exe' -Argument '/r'
 $trigger =  New-ScheduledTaskTrigger -Once -At 10pm
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "Reboot" -Description "Reboot scheduled task" -User $username -Password $password
 Disable-ScheduledTask -TaskName "Reboot"
+
+#Create Scheduled Task to turn on the firewall daily
+"Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True" > C:\Scripts\firewall.ps1
+
+$action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument 'C:\Scripts\Firewall_On.ps1'
+$trigger =  New-ScheduledTaskTrigger -Daily -At 10pm
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "FirewallOnTest" -Description "Turn On Firewall" -User $username -Password $password
+
+#Disable Server Manager on login
+Disable-ScheduledTask -TaskPath ‘\Microsoft\Windows\Server Manager\’ -TaskName ‘ServerManager’
 
 Set-NetFirewallProfile -Name "Public" -Enabled True
 
