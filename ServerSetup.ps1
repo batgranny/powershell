@@ -146,7 +146,7 @@ Disable-ScheduledTask -TaskName "Reboot"
 
 $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument 'C:\Scripts\Firewall_On.ps1'
 $trigger =  New-ScheduledTaskTrigger -Daily -At 10pm
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "FirewallOnTest" -Description "Turn On Firewall" -User $username -Password $password
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "FirewallOn" -Description "Turn On Firewall" -User $username -Password $password
 
 #Disable Server Manager on login
 Disable-ScheduledTask -TaskPath ‘\Microsoft\Windows\Server Manager\’ -TaskName ‘ServerManager’
