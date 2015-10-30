@@ -99,7 +99,7 @@ Install-WindowsFeature Hyper-V -IncludeManagementTools
 #Pin Hyper-V manager to taskbar
 $sa = new-object -c shell.application
 $pn = $sa.namespace('C:\Windows\System32').parsename('virtmgmt.msc')
-$pn.invokeverb('taskbarpin')c
+$pn.invokeverb('taskbarpin')
 
 Import-Module Hyper-V
 #Create External switch and internal LAN switch for VMs
@@ -152,6 +152,7 @@ choco install GoogleChrome -y
 choco install filezilla -y
 choco install notepadplusplus -y
 choco install spacesniffer -y
+choco install filezilla.server -y
 
 #Create and disable a Reboot Scheduled Task
 $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\shutdown.exe' -Argument '/r'
@@ -160,7 +161,7 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "Reboot" -Des
 Disable-ScheduledTask -TaskName "Reboot"
 
 #Create Scheduled Task to turn on the firewall daily
-"Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True" > C:\Scripts\firewall.ps1
+"Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True" > C:\Scripts\Firewall_On.ps1
 
 $action = New-ScheduledTaskAction -Execute 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument 'C:\Scripts\Firewall_On.ps1'
 $trigger =  New-ScheduledTaskTrigger -Daily -At 10pm
