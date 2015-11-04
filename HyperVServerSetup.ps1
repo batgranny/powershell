@@ -172,6 +172,6 @@ Disable-ScheduledTask -TaskPath ‘\Microsoft\Windows\Server Manager\’ -TaskNa
 
 Set-NetFirewallProfile -Name "Public" -Enabled True
 
-#Reboot
+#Reboot the server
 shutdown /r /t 05
 echo "Rebooting...."
